@@ -37,3 +37,9 @@ location /proxy/ {
     proxy_send_timeout 300;
 }
 ```
+
+## 설치
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/colorlit/GAPI-Proxy/refs/heads/main/setup-all.sh | sudo bash
+```
