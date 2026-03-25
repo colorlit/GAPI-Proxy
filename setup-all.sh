@@ -122,11 +122,11 @@ sudo npm install pm2 -g
 echo "PM2가 성공적으로 설치되었습니다."
 
 # --- 4. GitHub 리포지토리 복제 ---
-REPO_DIR="Chatboongproxy"
+REPO_DIR="GAPI-Proxy"
 if [ -d "$REPO_DIR" ]; then
     echo "[4/6] '$REPO_DIR' 디렉토리가 이미 존재합니다. 복제를 건너뜁니다."
 else
-    echo "[4/6] 'Chatboongproxy' 리포지토리를 복제합니다..."
+    echo "[4/6] 'GAPI-Proxy' 리포지토리를 복제합니다..."
     git clone https://github.com/colorlit/GAPI-Proxy
 fi
 
