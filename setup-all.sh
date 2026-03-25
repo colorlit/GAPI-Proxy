@@ -62,7 +62,7 @@ if [ $gemini_status -ne 0 ]; then
 fi
 
 # ==================================================================================
-# Node.js, PM2 및 Chatboongproxy 자동 설정 스크립트 (Ubuntu, AlmaLinux, Rocky, Oracle Linux 지원)
+# Node.js, PM2 및 GAPI-Proxy 자동 설정 스크립트 (Ubuntu, AlmaLinux, Rocky, Oracle Linux 지원)
 # ==================================================================================
 
 set -e
@@ -154,11 +154,37 @@ if [ -f "$CONFIG_FILE" ]; then
     echo -n "PAGE_PASSWORD 값을 입력하세요 (토큰 발급용 비밀번호): "
     read USER_PAGE_PASSWORD < /dev/tty
 
+    echo -n "> Cloudflare Turnstile(캡차)을 사용하시겠습니까? (y/n): "
+    read TURNSTILE_ANS < /dev/tty
+    if [[ "$TURNSTILE_ANS" =~ ^[Yy]$ ]]; then
+        USER_USE_TURNSTILE="true"
+        echo -n "  >> TURNSTILE_SITE_KEY를 입력하세요: "
+        read USER_SITE_KEY < /dev/tty
+        echo -n "  >> TURNSTILE_SECRET_KEY를 입력하세요: "
+        read USER_SECRET_KEY < /dev/tty
+    else
+        USER_USE_TURNSTILE="false"
+        USER_SITE_KEY="PUT_YOUR_SITE_KEY_HERE"
+        USER_SECRET_KEY="PUT_YOUR_SECRET_KEY_HERE"
+    fi
+
+    echo -n "> Nginx 리버스 프록시 모드(HTTP 3000 포트)를 사용하시겠습니까? (y/n): "
+    read NGINX_ANS < /dev/tty
+    if [[ "$NGINX_ANS" =~ ^[Yy]$ ]]; then
+        USER_USE_NGINX="true"
+    else
+        USER_USE_NGINX="false"
+    fi
+
     USER_ALLOWED_REFERER="https://$USER_ALLOWED_HOST"
 
     sed -i "s|ALLOWED_HOST: '.*'|ALLOWED_HOST: '$USER_ALLOWED_HOST'|g" $CONFIG_FILE
     sed -i "s|ALLOWED_REFERER: '.*'|ALLOWED_REFERER: '$USER_ALLOWED_REFERER'|g" $CONFIG_FILE
     sed -i "s|PAGE_PASSWORD: '.*'|PAGE_PASSWORD: '$USER_PAGE_PASSWORD'|g" $CONFIG_FILE
+    sed -i "s|TURNSTILE_SITE_KEY: '.*'|TURNSTILE_SITE_KEY: '$USER_SITE_KEY'|g" $CONFIG_FILE
+    sed -i "s|TURNSTILE_SECRET_KEY: '.*'|TURNSTILE_SECRET_KEY: '$USER_SECRET_KEY'|g" $CONFIG_FILE
+    sed -i "s|USE_TURNSTILE: .*,|USE_TURNSTILE: $USER_USE_TURNSTILE,|g" $CONFIG_FILE
+    sed -i "s|USE_NGINX: .*,|USE_NGINX: $USER_USE_NGINX,|g" $CONFIG_FILE
     echo "config.js 주요 값이 성공적으로 변경되었습니다."
 else
     echo "[설정] config.js 파일을 찾을 수 없습니다. 수동으로 수정해 주세요."
@@ -176,8 +202,11 @@ fi
 # --- 8. PM2 startup 설정 ---
 echo "[8/8] PM2 startup 설정을 진행합니다..."
 pm2 startup
+pm2 save
 echo "PM2 startup 설정이 완료되었습니다."
 
 echo "========================================="
 echo "모든 설정 과정이 성공적으로 완료되었습니다."
+echo "Nginx 리버스 프록시 모드를 선택한 경우, Nginx 설정을 추가로 진행해야 합니다."
+echo "/etc/nginx/sites-available/default 파일의 HTTP(S) 서버 블록에 proxy_pass http://localhost:3000/;에 대한 location을 추가해 주세요."
 echo "현재 위치: $(pwd)"
