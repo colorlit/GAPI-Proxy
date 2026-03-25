@@ -51,7 +51,7 @@ const requestHandler = async (clientReq, clientRes) => {
                 clientRes.end(`
                     <html><body>
                     <h2>ChatboongProxy 토큰 발급 페이지</h2>
-                    <form method="GET" action="/">
+                    <form method="GET" action="./">
                         <input type="password" name="password" placeholder="비밀번호 입력" style="width:200px;" />
                         <button type="submit">토큰 발급</button>
                     </form>
@@ -69,7 +69,7 @@ const requestHandler = async (clientReq, clientRes) => {
                     <h2>ChatboongProxy 토큰 발급 완료</h2>
                     <input type="text" value="${token}" readonly style="width:350px;" onclick="this.select()" />
                     <p>이 토큰을 Chatboongproxyauth 헤더에 사용하세요.</p>
-                    <a href="/">돌아가기</a>
+                    <a href="./">돌아가기</a>
                     </body></html>
                 `);
                 return;
@@ -78,7 +78,7 @@ const requestHandler = async (clientReq, clientRes) => {
                 clientRes.end(`
                     <html><body>
                     <h2>ChatboongProxy 토큰 발급 페이지</h2>
-                    <form method="GET" action="/">
+                    <form method="GET" action="./">
                         <input type="password" name="password" placeholder="비밀번호 입력" style="width:200px;" />
                         <button type="submit">토큰 발급</button>
                     </form>
@@ -94,7 +94,7 @@ const requestHandler = async (clientReq, clientRes) => {
             <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
             </head><body>
             <h2>ChatboongProxy 토큰 발급</h2>
-            <form method="POST" action="/issue-token">
+            <form method="POST" action="./issue-token">
                 <div class="cf-turnstile" data-sitekey="${config.TURNSTILE_SITE_KEY}"></div>
                 <button type="submit">토큰 발급</button>
             </form>
@@ -104,7 +104,7 @@ const requestHandler = async (clientReq, clientRes) => {
     }
     if (clientReq.url === '/issue-token' && clientReq.method === 'POST') {
         const referer = clientReq.headers['referer'] || '';
-        if (!referer.startsWith(config.ALLOWED_REFERER)) {
+        if (!referer.includes(config.ALLOWED_REFERER)) {
             clientRes.writeHead(403, { 'Content-Type': 'text/plain; charset=utf-8' });
             clientRes.end('CSRF 방지: 올바른 Referer가 아닙니다.');
             return;
@@ -149,7 +149,7 @@ const requestHandler = async (clientReq, clientRes) => {
                                     <h2>ChatboongProxy 토큰 발급 완료</h2>
                                     <input type="text" value="${token}" readonly style="width:350px;" onclick="this.select()" />
                                     <p>이 토큰을 Chatboongproxyauth 헤더에 사용하세요.</p>
-                                    <a href="/">돌아가기</a>
+                                    <a href="./">돌아가기</a>
                                     </body></html>
                                 `);
                             } else {
@@ -178,7 +178,7 @@ const requestHandler = async (clientReq, clientRes) => {
                     <h2>ChatboongProxy 토큰 발급 완료</h2>
                     <input type="text" value="${token}" readonly style="width:350px;" onclick="this.select()" />
                     <p>이 토큰을 Chatboongproxyauth 헤더에 사용하세요.</p>
-                    <a href="/">돌아가기</a>
+                    <a href="./">돌아가기</a>
                     </body></html>
                 `);
             }
