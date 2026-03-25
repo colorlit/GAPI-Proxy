@@ -18,7 +18,7 @@ const config = {
 if (config.USE_TURNSTILE) {
     config.HTTP_PORT = 80;
     config.HTTPS_PORT = 443;
-    config.USE_NGINEX = false;
+    config.USE_NGINX = false;
 }
 
 // using local Nginx
