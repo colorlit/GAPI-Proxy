@@ -212,9 +212,16 @@ const requestHandler = async (clientReq, clientRes) => {
     });
     clientReq.pipe(proxyReq, { end: true });
 };
-http.createServer(requestHandler).listen(HTTP_PORT, () => {
-    console.log(`HTTP reverse proxy running on http://${config.ALLOWED_HOST}:${HTTP_PORT}/`);
-});
-https.createServer(sslOptions, requestHandler).listen(HTTPS_PORT, () => {
-    console.log(`HTTPS reverse proxy running on https://${config.ALLOWED_HOST}:${HTTPS_PORT}/`);
-});
+
+if(config.USE_NGINX) {
+    http.createServer(requestHandler).listen(HTTP_PORT, () => {
+        console.log(`Nginx reverse proxy is listening on internal port ${HTTP_PORT}`);
+    }); 
+} else {
+    http.createServer(requestHandler).listen(HTTP_PORT, () => {
+        console.log(`HTTP reverse proxy running on http://${config.ALLOWED_HOST}:${HTTP_PORT}/`);
+    });
+    https.createServer(sslOptions, requestHandler).listen(HTTPS_PORT, () => {
+        console.log(`HTTPS reverse proxy running on https://${config.ALLOWED_HOST}:${HTTPS_PORT}/`);
+    });
+}

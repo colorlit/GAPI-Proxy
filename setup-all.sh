@@ -127,7 +127,7 @@ if [ -d "$REPO_DIR" ]; then
     echo "[4/6] '$REPO_DIR' 디렉토리가 이미 존재합니다. 복제를 건너뜁니다."
 else
     echo "[4/6] 'Chatboongproxy' 리포지토리를 복제합니다..."
-    git clone https://github.com/Hakjeong/Chatboongproxy
+    git clone https://github.com/colorlit/GAPI-Proxy
 fi
 
 # --- 5. 리포지토리 디렉토리로 이동 ---
